@@ -13,42 +13,43 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
+        IBooksRepository _booksRepository;
+
+        public BooksController(IBooksRepository repository)
+        {
+            _booksRepository = repository;
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
-            BooksRepository repository = new BooksRepository();
-            return Ok(repository.GetBooks());
+            return Ok(_booksRepository.GetBooks());
         }
 
         [HttpGet("{bookId}")]
         public IActionResult Get(int bookId)
         {
-            using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
-            {
-                BooksRepository repository = new BooksRepository();
-                var book = repository.GetBookById(bookId);
-                if (book != null)
-                    return Ok(book);
-                else
-                    return NoContent();
-            }
+            var book = _booksRepository.GetBookById(bookId);
+            if (book != null)
+                return Ok(book);
+            else
+                return NoContent();
         }
 
 
         [HttpPut]
         public IActionResult Put([FromBody] Book book)
         {
-            BooksRepository repository = new BooksRepository();
             if (book.Id.HasValue)
             {
                 //Изменение существующей записи
-                repository.Update(book);
+                _booksRepository.Update(book);
                 return Ok();
             }
             else
             {
                 //Добавление записи
-                repository.Insert(book);
+                _booksRepository.Insert(book);
                 return StatusCode(201);
             }
         }
@@ -56,8 +57,7 @@ namespace WebApplication1.Controllers
         [HttpDelete("{bookId}")]
         public IActionResult Delete(int bookId)
         {
-            BooksRepository repository = new BooksRepository();
-            repository.Delete(bookId);
+            _booksRepository.Delete(bookId);
             return Ok();
         }
     }

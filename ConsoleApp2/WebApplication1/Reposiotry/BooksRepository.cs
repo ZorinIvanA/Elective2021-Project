@@ -7,7 +7,7 @@ using WebApplication1.Controllers;
 
 namespace WebApplication1.Reposiotry
 {
-    public class BooksRepository
+    public class BooksRepository : IBooksRepository
     {
         public Book[] GetBooks()
         {
