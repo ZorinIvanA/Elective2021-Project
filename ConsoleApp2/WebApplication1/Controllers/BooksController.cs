@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using WebApplication1.Reposiotry;
 
 namespace WebApplication1.Controllers
 {
@@ -15,25 +16,8 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
-            {
-                connection.Open();
-                using (var command = new SqlCommand("SELECT * FROM books", connection))
-                {
-                    List<Book> books = new List<Book> { };
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        Book newBook = new Book();
-                        newBook.PublishedYear = int.Parse(reader["published_year"].ToString());
-                        newBook.Name = reader["name"].ToString();
-
-                        books.Add(newBook);
-                    }
-
-                    return Ok(books);
-                }
-            }
+            BooksRepository repository = new BooksRepository();
+            return Ok(repository.GetBooks());
         }
 
         [HttpGet("{bookId}")]
@@ -41,37 +25,30 @@ namespace WebApplication1.Controllers
         {
             using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
             {
-                connection.Open();
-                using (var command = new SqlCommand($"SELECT * FROM books WHERE id={bookId}", connection))
-                {
-                    var reader = command.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        Book newBook = new Book();
-                        newBook.PublishedYear = int.Parse(reader["published_year"].ToString());
-                        newBook.Name = reader["name"].ToString();
-
-                        return Ok(newBook);
-                    }
-                    else
-                        return NoContent();
-                }
+                BooksRepository repository = new BooksRepository();
+                var book = repository.GetBookById(bookId);
+                if (book != null)
+                    return Ok(book);
+                else
+                    return NoContent();
             }
         }
+
 
         [HttpPut]
         public IActionResult Put([FromBody] Book book)
         {
+            BooksRepository repository = new BooksRepository();
             if (book.Id.HasValue)
             {
                 //Изменение существующей записи
-                ExecuteSqlCommand($"UPDATE books SET name='{book.Name}', published_year={book.PublishedYear} WHERE id={book.Id}");
+                repository.Update(book);
                 return Ok();
             }
             else
             {
                 //Добавление записи
-                ExecuteSqlCommand($"INSERT INTO books (name, published_year) VALUES ('{book.Name}', {book.PublishedYear})");
+                repository.Insert(book);
                 return StatusCode(201);
             }
         }
@@ -79,22 +56,10 @@ namespace WebApplication1.Controllers
         [HttpDelete("{bookId}")]
         public IActionResult Delete(int bookId)
         {
-            ExecuteSqlCommand($"DELETE FROM books WHERE id={bookId}");
+            BooksRepository repository = new BooksRepository();
+            repository.Delete(bookId);
             return Ok();
-        }
-
-
-        protected void ExecuteSqlCommand(string commandText)
-        {
-            using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
-            {
-                connection.Open();
-                using (var command = new SqlCommand(commandText, connection))
-                {
-                    var s = command.CommandText;
-                    var reader = command.ExecuteNonQuery();
-                }
-            }
         }
     }
 }
+
