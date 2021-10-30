@@ -36,6 +36,28 @@ namespace WebApplication1.Controllers
             }
         }
 
+        [HttpGet("{bookId}")]
+        public IActionResult Get(int bookId)
+        {
+            using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
+            {
+                connection.Open();
+                using (var command = new SqlCommand($"SELECT * FROM books WHERE id={bookId}", connection))
+                {
+                    var reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        Book newBook = new Book();
+                        newBook.PublishedYear = int.Parse(reader["published_year"].ToString());
+                        newBook.Name = reader["name"].ToString();
+
+                        return Ok(newBook);
+                    }
+                    else
+                        return NoContent();
+                }
+            }
+        }
 
         [HttpPut]
         public IActionResult Put([FromBody] Book book)
@@ -54,11 +76,19 @@ namespace WebApplication1.Controllers
             }
         }
 
+        [HttpDelete("{bookId}")]
+        public IActionResult Delete(int bookId)
+        {
+            ExecuteSqlCommand($"DELETE FROM books WHERE id={bookId}");
+            return Ok();
+        }
+
+
         protected void ExecuteSqlCommand(string commandText)
         {
             using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
             {
-                connection.Open();                
+                connection.Open();
                 using (var command = new SqlCommand(commandText, connection))
                 {
                     var s = command.CommandText;
