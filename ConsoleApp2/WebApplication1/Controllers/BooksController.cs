@@ -40,29 +40,29 @@ namespace WebApplication1.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] Book book)
         {
+            if (book.Id.HasValue)
+            {
+                //Изменение существующей записи
+                ExecuteSqlCommand($"UPDATE books SET name='{book.Name}', published_year={book.PublishedYear} WHERE id={book.Id}");
+                return Ok();
+            }
+            else
+            {
+                //Добавление записи
+                ExecuteSqlCommand($"INSERT INTO books (name, published_year) VALUES ('{book.Name}', {book.PublishedYear})");
+                return StatusCode(201);
+            }
+        }
+
+        protected void ExecuteSqlCommand(string commandText)
+        {
             using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
             {
-                connection.Open();
-                if (book.Id.HasValue)
+                connection.Open();                
+                using (var command = new SqlCommand(commandText, connection))
                 {
-                    //Изменение существующей записи
-                    using (var command = new SqlCommand($"UPDATE books SET name='{book.Name}', published_year={book.PublishedYear} WHERE id={book.Id}", connection))
-                    {
-                        var s = command.CommandText;
-                        var reader = command.ExecuteNonQuery();
-                        return Ok();
-                    }
-                }
-                else
-                {
-                    //Добавление новой записи
-                    using (var command = new SqlCommand($"INSERT INTO books (name, published_year) VALUES ('{book.Name}', {book.PublishedYear})", connection))
-                    {
-                        var s = command.CommandText;
-                        var reader = command.ExecuteNonQuery();
-
-                        return StatusCode(201);
-                    }
+                    var s = command.CommandText;
+                    var reader = command.ExecuteNonQuery();
                 }
             }
         }
