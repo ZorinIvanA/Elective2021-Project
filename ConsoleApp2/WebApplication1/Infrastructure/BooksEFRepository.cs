@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using WebApplication1.Controllers;
+using WebApplication1.Domain;
 
-namespace WebApplication1.Reposiotry
+namespace WebApplication1.Infrastructure
 {
     public class BooksEFRepository : IBooksRepository
     {
@@ -57,6 +55,20 @@ namespace WebApplication1.Reposiotry
                     Id = 0,
                     Name = book.Name,
                     PublishedYear = (short)book.PublishedYear
+                });
+                context.SaveChanges();
+            }
+        }
+
+        public void SaveBookRead(int book, string user)
+        {
+            using (var context = new BooksContext())
+            {
+                context.BooksReads.Add(new BooksRead
+                {
+                    Id = Guid.NewGuid(),
+                    BookId = book,
+                    Reader = user
                 });
                 context.SaveChanges();
             }

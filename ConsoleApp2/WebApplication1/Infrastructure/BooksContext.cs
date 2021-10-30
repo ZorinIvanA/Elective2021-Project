@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace WebApplication1
+namespace WebApplication1.Infrastructure
 {
     public partial class BooksContext : DbContext
     {
@@ -19,6 +19,7 @@ namespace WebApplication1
 
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<BookDTO> Books { get; set; }
+        public virtual DbSet<BooksRead> BooksReads { get; set; }
         public virtual DbSet<Publisher> Publishers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -72,6 +73,26 @@ namespace WebApplication1
                     .WithMany(p => p.Books)
                     .HasForeignKey(d => d.PublisherId)
                     .HasConstraintName("FK_Books_Publishers");
+            });
+
+            modelBuilder.Entity<BooksRead>(entity =>
+            {
+                entity.ToTable("BooksRead");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.BookId).HasColumnName("book_id");
+
+                entity.Property(e => e.Reader)
+                    .HasMaxLength(75)
+                    .HasColumnName("reader");
+
+                entity.HasOne(d => d.Book)
+                    .WithMany(p => p.BooksReads)
+                    .HasForeignKey(d => d.BookId)
+                    .HasConstraintName("FK_BooksRead_Books");
             });
 
             modelBuilder.Entity<Publisher>(entity =>

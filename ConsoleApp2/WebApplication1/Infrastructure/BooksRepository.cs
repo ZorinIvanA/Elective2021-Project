@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
-using WebApplication1.Controllers;
+using WebApplication1.Domain;
 
-namespace WebApplication1.Reposiotry
+namespace WebApplication1.Infrastructure
 {
     public class BooksRepository : IBooksRepository
     {
@@ -83,6 +81,11 @@ namespace WebApplication1.Reposiotry
                     var reader = command.ExecuteNonQuery();
                 }
             }
+        }
+
+        public void SaveBookRead(int book, string user)
+        {
+            throw new NotImplementedException();
         }
     }
 }

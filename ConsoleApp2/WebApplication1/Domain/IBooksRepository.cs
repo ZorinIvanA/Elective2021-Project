@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Controllers
+namespace WebApplication1.Domain
 {
     public interface IBooksRepository
     {
@@ -15,5 +15,7 @@ namespace WebApplication1.Controllers
         void Update(Book book);
 
         void Delete(int bookId);
+
+        void SaveBookRead(int book, string user);
     }
 }
