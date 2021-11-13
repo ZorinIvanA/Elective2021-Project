@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using WebApplication1.Application;
 using WebApplication1.Domain;
 
@@ -9,10 +12,12 @@ namespace WebApplication1.Controllers
     public class BooksController : ControllerBase
     {
         IBooksRepository _booksRepository;
+        ILogger<BooksController> _logger;
 
-        public BooksController(IBooksRepository repository)
+        public BooksController(IBooksRepository repository, ILogger<BooksController> logger)
         {
             _booksRepository = repository;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
@@ -24,11 +29,20 @@ namespace WebApplication1.Controllers
         [HttpGet("{bookId}")]
         public IActionResult Get(int bookId)
         {
-            var book = _booksRepository.GetBookById(bookId);
-            if (book != null)
-                return Ok(book);
-            else
-                return NoContent();
+            try
+            {
+                var book = _booksRepository.GetBookById(bookId);
+                
+                if (book != null)
+                    return Ok(book);
+                else
+                    return NoContent();               
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ошибка", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ошибка");
+            }
         }
 
 
