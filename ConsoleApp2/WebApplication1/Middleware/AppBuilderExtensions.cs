@@ -12,10 +12,11 @@ namespace WebApplication1.Middleware
         public static IApplicationBuilder UseLoggingMiddleware(this IApplicationBuilder app,
             ILogger logger)
         {
-            return app.Use((req, next) =>
+            return app.Use(async (req, next) =>
             {
                 logger.LogInformation($"Request {req.Request.Path} started");
-                return next.Invoke();
+                await next.Invoke();
+                logger.LogInformation($"Request {req.Request.Path} finished");
             });
         }
     }

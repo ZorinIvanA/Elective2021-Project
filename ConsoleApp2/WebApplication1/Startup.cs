@@ -8,6 +8,7 @@ using WebApplication1.Infrastructure;
 using Serilog;
 using Microsoft.Extensions.Logging;
 using WebApplication1.Middleware;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1
 {
@@ -42,12 +43,12 @@ namespace WebApplication1
 
             app.UseAuthorization();
 
+            app.UseLoggingMiddleware(logger);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
-            app.UseLoggingMiddleware(logger);
         }
     }
 }
