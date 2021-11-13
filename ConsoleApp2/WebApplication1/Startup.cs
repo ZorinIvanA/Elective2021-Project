@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApplication1.Domain;
 using WebApplication1.Infrastructure;
+using Serilog;
 
 namespace WebApplication1
 {
