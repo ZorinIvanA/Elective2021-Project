@@ -31,12 +31,12 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                _logger.LogInformation("Start");
                 var book = _booksRepository.GetBookById(bookId);
+                
                 if (book != null)
                     return Ok(book);
                 else
-                    return NoContent();
+                    return NoContent();               
             }
             catch (Exception ex)
             {
