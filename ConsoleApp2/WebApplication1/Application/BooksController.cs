@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using WebApplication1.Application;
 using WebApplication1.Domain;
 
@@ -16,51 +17,77 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(_booksRepository.GetBooks());
+            return Ok(await _booksRepository.GetBooks());
         }
 
         [HttpGet("{bookId}")]
-        public IActionResult Get(int bookId)
+        public async Task<IActionResult> Get(int bookId)
         {
-            var book = _booksRepository.GetBookById(bookId);
+            try
+            {
+                var book = await _booksRepository.GetBookById(bookId);
+
             if (book != null)
                 return Ok(book);
             else
-                return NoContent();
+                    return NoContent();
+        }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ошибка", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ошибка");
+            }
         }
 
 
         [HttpPut]
-        public IActionResult Put([FromBody] Book book)
+        public async Task<IActionResult> Put([FromBody] Book book)
         {
             if (book.Id.HasValue)
             {
                 //Изменение существующей записи
-                _booksRepository.Update(book);
-                return Ok();
+                return await UpdateAsync(book);
             }
             else
             {
                 //Добавление записи
-                _booksRepository.Insert(book);
-                return StatusCode(201);
+                return await InsertAsync(book);
             }
         }
 
-        [HttpDelete("{bookId}")]
-        public IActionResult Delete(int bookId)
+        private Task<IActionResult> UpdateAsync(Book book)
         {
-            _booksRepository.Delete(bookId);
+            return Task.Run(() =>
+            {
+                _booksRepository.Update(book);
+                return Ok() as IActionResult;
+            });
+        }
+
+        private Task<IActionResult> InsertAsync(Book book)
+        {
+            return Task.Run(() =>
+            {
+                _booksRepository.Insert(book);
+                return StatusCode(201) as IActionResult;
+            });
+        }
+
+        [HttpDelete("{bookId}")]
+        public async Task<IActionResult> Delete(int bookId)
+        {
+            await _booksRepository.Delete(bookId);
             return Ok();
         }
 
         [HttpPost]
-        public IActionResult TakeBook(TakeBookModel model)
+        public async Task<IActionResult> TakeBook(TakeBookModel model)
         {
             var book = new Book(model.Book, _booksRepository);
-            book.Take(model.User);
+            await book.Take(model.User);
 
             return Ok();
         }
