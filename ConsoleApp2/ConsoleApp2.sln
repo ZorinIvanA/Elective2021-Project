@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebAppli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceToConnect", "ServiceToConnect\ServiceToConnect.csproj", "{FE3C97E3-3CB7-4F30-AFB2-01BAC4139AAA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestProject1", "XUnitTestProject1\XUnitTestProject1.csproj", "{5150FE82-33C1-463D-A763-2EC5C884AF5B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,10 +23,10 @@ Global
 		{163C1125-C91D-4250-A7FB-655F603EB0EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{163C1125-C91D-4250-A7FB-655F603EB0EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{163C1125-C91D-4250-A7FB-655F603EB0EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5150FE82-33C1-463D-A763-2EC5C884AF5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5150FE82-33C1-463D-A763-2EC5C884AF5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5150FE82-33C1-463D-A763-2EC5C884AF5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5150FE82-33C1-463D-A763-2EC5C884AF5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE3C97E3-3CB7-4F30-AFB2-01BAC4139AAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE3C97E3-3CB7-4F30-AFB2-01BAC4139AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE3C97E3-3CB7-4F30-AFB2-01BAC4139AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE3C97E3-3CB7-4F30-AFB2-01BAC4139AAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

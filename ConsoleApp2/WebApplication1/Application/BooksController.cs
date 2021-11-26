@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using System;
 using WebApplication1.Application;
 using WebApplication1.Domain;
 
@@ -10,10 +13,12 @@ namespace WebApplication1.Controllers
     public class BooksController : ControllerBase
     {
         IBooksRepository _booksRepository;
+        ILogger<BooksController> _logger;
 
-        public BooksController(IBooksRepository repository)
+        public BooksController(IBooksRepository repository, ILogger<BooksController> logger)
         {
             _booksRepository = repository;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
@@ -29,10 +34,16 @@ namespace WebApplication1.Controllers
             {
                 var book = await _booksRepository.GetBookById(bookId);
 
-            if (book != null)
-                return Ok(book);
-            else
+                if (book != null)
+                    return Ok(book);
+                else
                     return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ошибка", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ошибка");
+            }
         }
             }
             catch (Exception ex)
