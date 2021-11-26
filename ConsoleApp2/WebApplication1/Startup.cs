@@ -22,6 +22,7 @@ namespace WebApplication1
         {
             services.AddControllers();
             services.AddTransient<IBooksRepository, BooksEFRepository>();
+            services.AddSingleton<IBookFactory, BooksFactory>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

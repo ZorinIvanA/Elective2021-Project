@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 using WebApplication1.Application;
 using WebApplication1.Domain;
@@ -10,10 +13,17 @@ namespace WebApplication1.Controllers
     public class BooksController : ControllerBase
     {
         IBooksRepository _booksRepository;
+        ILogger<BooksController> _logger;
+        IBookFactory _bookFactory;
 
-        public BooksController(IBooksRepository repository)
+        public BooksController(
+            IBooksRepository repository,
+            IBookFactory booksFactory,
+            ILogger<BooksController> logger)
         {
             _booksRepository = repository;
+            _logger = logger;
+            _bookFactory = booksFactory ?? throw new ArgumentNullException(nameof(booksFactory));
         }
 
         [HttpGet]
@@ -29,11 +39,11 @@ namespace WebApplication1.Controllers
             {
                 var book = await _booksRepository.GetBookById(bookId);
 
-            if (book != null)
-                return Ok(book);
-            else
+                if (book != null)
+                    return Ok(book);
+                else
                     return NoContent();
-        }
+
             }
             catch (Exception ex)
             {
@@ -86,10 +96,18 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> TakeBook(TakeBookModel model)
         {
-            var book = new Book(model.Book, _booksRepository);
-            await book.Take(model.User);
+            try
+            {
+                await _bookFactory.CreateBookAsync(model.Book)
+                    .ContinueWith(previousTask => previousTask.Result.Take(model.User));
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ошибка", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ошибка");
+            }
         }
     }
 }
