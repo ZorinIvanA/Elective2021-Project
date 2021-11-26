@@ -1,90 +1,109 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using WebApplication1.Domain;
 
 namespace WebApplication1.Infrastructure
 {
     public class BooksEFRepository : IBooksRepository
     {
-        public void Delete(int bookId)
+        public Task Delete(int bookId)
         {
-            using (var context = new BooksContext())
+            return Task.Run(() =>
             {
-                context.Books.Remove(context.Books.FirstOrDefault(x => x.Id == bookId));
-            }
-        }
-
-        public Book GetBookById(int bookId)
-        {
-            Book book;
-            using (var context = new BooksContext())
-            {
-                var bookDto = context.Books.FirstOrDefault(x => x.Id == bookId);
-                book = new Book
+                using (var context = new BooksContext())
                 {
-                    Id = bookDto.Id,
-                    Name = bookDto.Name,
-                    PublishedYear = bookDto.PublishedYear.Value
-                };
-            }
-            return book;
+                    context.Books.Remove(context.Books.FirstOrDefault(x => x.Id == bookId));
+                }
+            });
         }
 
-        public Book[] GetBooks()
+        public Task<Book> GetBookById(int bookId)
         {
-            var books = new Book[] { };
-            using (var context = new BooksContext())
+            return Task.Run(() =>
             {
-                books = (from bookDto in context.Books
-                         select new Book
-                         {
-                             Id = bookDto.Id,
-                             Name = bookDto.Name,
-                             PublishedYear = bookDto.PublishedYear.Value
-                         }).ToArray();
-            }
-            return books;
-        }
-
-        public void Insert(Book book)
-        {
-            using (var context = new BooksContext())
-            {
-                context.Books.Add(new BookDTO
+                Book book;
+                using (var context = new BooksContext())
                 {
-                    Id = 0,
-                    Name = book.Name,
-                    PublishedYear = (short)book.PublishedYear
-                });
-                context.SaveChanges();
-            }
+                    var bookDto = context.Books.FirstOrDefault(x => x.Id == bookId);
+                    book = new Book
+                    {
+                        Id = bookDto.Id,
+                        Name = bookDto.Name,
+                        PublishedYear = bookDto.PublishedYear.Value
+                    };
+                }
+                return book;
+            });
         }
 
-        public void SaveBookRead(int book, string user)
+        public Task<Book[]> GetBooks()
         {
-            using (var context = new BooksContext())
+            return Task.Run(() =>
             {
-                context.BooksReads.Add(new BooksRead
+                var books = new Book[] { };
+                using (var context = new BooksContext())
                 {
-                    Id = Guid.NewGuid(),
-                    BookId = book,
-                    Reader = user
-                });
-                context.SaveChanges();
-            }
+                    books = (from bookDto in context.Books
+                             select new Book
+                             {
+                                 Id = bookDto.Id,
+                                 Name = bookDto.Name,
+                                 PublishedYear = bookDto.PublishedYear.Value
+                             }).ToArray();
+                }
+                return books;
+            });
         }
 
-        public void Update(Book book)
+        public Task Insert(Book book)
         {
-            using (var context = new BooksContext())
+            return Task.Run(() =>
             {
-                var bookToEdit = context.Books.FirstOrDefault(x => x.Id == book.Id);
-                bookToEdit.Id = book.Id.Value;
-                bookToEdit.Name = book.Name;
-                bookToEdit.PublishedYear = (short)book.PublishedYear;
+                using (var context = new BooksContext())
+                {
+                    context.Books.Add(new BookDTO
+                    {
+                        Id = 0,
+                        Name = book.Name,
+                        PublishedYear = (short)book.PublishedYear
+                    });
+                    context.SaveChanges();
+                }
+            });
+        }
 
-                context.SaveChanges();
-            }
+        public Task SaveBookRead(int book, string user)
+        {
+            return Task.Run(() =>
+            {
+                using (var context = new BooksContext())
+                {
+                    context.BooksReads.Add(new BooksRead
+                    {
+                        Id = Guid.NewGuid(),
+                        BookId = book,
+                        Reader = user
+                    });
+                    context.SaveChanges();
+                }
+            });
+        }
+
+        public Task Update(Book book)
+        {
+            return Task.Run(() =>
+            {
+                using (var context = new BooksContext())
+                {
+                    var bookToEdit = context.Books.FirstOrDefault(x => x.Id == book.Id);
+                    bookToEdit.Id = book.Id.Value;
+                    bookToEdit.Name = book.Name;
+                    bookToEdit.PublishedYear = (short)book.PublishedYear;
+
+                    context.SaveChanges();
+                }
+            });
         }
     }
 }

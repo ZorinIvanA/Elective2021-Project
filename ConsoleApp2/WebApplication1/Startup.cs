@@ -5,10 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApplication1.Domain;
 using WebApplication1.Infrastructure;
-using Serilog;
-using Microsoft.Extensions.Logging;
-using WebApplication1.Middleware;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1
 {
@@ -26,12 +22,11 @@ namespace WebApplication1
         {
             services.AddControllers();
             services.AddTransient<IBooksRepository, BooksEFRepository>();
-            services.AddTransient<IForecastProvider, ForecastProvider>();
+            services.AddSingleton<IBookFactory, BooksFactory>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -43,8 +38,6 @@ namespace WebApplication1
             app.UseRouting();
 
             app.UseAuthorization();
-
-            app.UseLoggingMiddleware(logger);
 
             app.UseEndpoints(endpoints =>
             {

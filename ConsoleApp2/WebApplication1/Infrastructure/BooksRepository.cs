@@ -1,89 +1,98 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using WebApplication1.Domain;
 
 namespace WebApplication1.Infrastructure
 {
     public class BooksRepository : IBooksRepository
     {
-        public Book[] GetBooks()
+        public Task<Book[]> GetBooks()
         {
-            using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
+            return Task.Run(() =>
             {
-                connection.Open();
-                using (var command = new SqlCommand("SELECT * FROM books", connection))
+                using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
                 {
-                    List<Book> books = new List<Book> { };
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
+                    connection.Open();
+                    using (var command = new SqlCommand("SELECT * FROM books", connection))
                     {
-                        Book newBook = new Book();
-                        newBook.PublishedYear = int.Parse(reader["published_year"].ToString());
-                        newBook.Name = reader["name"].ToString();
+                        List<Book> books = new List<Book> { };
+                        var reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            Book newBook = new Book();
+                            newBook.PublishedYear = int.Parse(reader["published_year"].ToString());
+                            newBook.Name = reader["name"].ToString();
 
-                        books.Add(newBook);
+                            books.Add(newBook);
+                        }
+
+                        return books.ToArray();
                     }
-
-                    return books.ToArray();
                 }
-            }
+            });
         }
 
-        public Book GetBookById(int bookId)
+        public Task<Book> GetBookById(int bookId)
         {
-            using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
+            return Task.Run(() =>
             {
-                connection.Open();
-                using (var command = new SqlCommand($"SELECT * FROM books WHERE id={bookId}", connection))
+                using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
                 {
-                    var reader = command.ExecuteReader();
-                    if (reader.Read())
+                    connection.Open();
+                    using (var command = new SqlCommand($"SELECT * FROM books WHERE id={bookId}", connection))
                     {
-                        Book newBook = new Book();
-                        newBook.PublishedYear = int.Parse(reader["published_year"].ToString());
-                        newBook.Name = reader["name"].ToString();
+                        var reader = command.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            Book newBook = new Book();
+                            newBook.PublishedYear = int.Parse(reader["published_year"].ToString());
+                            newBook.Name = reader["name"].ToString();
 
-                        return newBook;
+                            return newBook;
+                        }
+                        else
+                            return null;
                     }
-                    else
-                        return null;
                 }
-            }
+            });
         }
 
 
-        public void Insert(Book book)
+        public Task Insert(Book book)
         {
-            ExecuteSqlCommand($"INSERT INTO books (name, published_year) VALUES ('{book.Name}', {book.PublishedYear})");
+            return ExecuteSqlCommand($"INSERT INTO books (name, published_year) VALUES ('{book.Name}', {book.PublishedYear})");
         }
 
-        public void Update(Book book)
+        public Task Update(Book book)
         {
-            ExecuteSqlCommand($"UPDATE books SET name='{book.Name}', published_year={book.PublishedYear} WHERE id={book.Id}");
+            return ExecuteSqlCommand($"UPDATE books SET name='{book.Name}', published_year={book.PublishedYear} WHERE id={book.Id}");
+        }
+
+        public Task Delete(int bookId)
+        {
+            return ExecuteSqlCommand($"DELETE FROM books WHERE id={bookId}");
         }
 
 
-        public void Delete(int bookId)
+        protected Task ExecuteSqlCommand(string commandText)
         {
-            ExecuteSqlCommand($"DELETE FROM books WHERE id={bookId}");
-        }
-
-
-        protected void ExecuteSqlCommand(string commandText)
-        {
-            using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
+            return Task.Run(() =>
             {
-                connection.Open();
-                using (var command = new SqlCommand(commandText, connection))
+                using (SqlConnection connection = new SqlConnection("Server=zorin;database=Books;Trusted_Connection=True;"))
                 {
-                    var s = command.CommandText;
-                    var reader = command.ExecuteNonQuery();
+                    connection.Open();
+                    using (var command = new SqlCommand(commandText, connection))
+                    {
+                        var s = command.CommandText;
+                        var reader = command.ExecuteNonQuery();
+                    }
                 }
-            }
+            });
         }
 
-        public void SaveBookRead(int book, string user)
+        public Task SaveBookRead(int book, string user)
         {
             throw new NotImplementedException();
         }

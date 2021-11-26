@@ -7,15 +7,15 @@ namespace WebApplication1.Domain
 {
     public interface IBooksRepository
     {
-        Book[] GetBooks();
-        Book GetBookById(int bookId);
+        Task<Book[]> GetBooks();
+        Task<Book> GetBookById(int bookId);
 
-        void Insert(Book book);
+        Task Insert(Book book);
 
-        void Update(Book book);
+        Task Update(Book book);
 
-        void Delete(int bookId);
+        Task Delete(int bookId);
 
-        void SaveBookRead(int book, string user);
+        Task SaveBookRead(int book, string user);
     }
 }

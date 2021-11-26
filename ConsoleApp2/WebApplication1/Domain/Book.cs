@@ -1,4 +1,7 @@
-﻿namespace WebApplication1.Domain
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace WebApplication1.Domain
 {
     public class Book
     {
@@ -8,7 +11,7 @@
         {
             _booksRepository = booksRepository;
 
-            var book = _booksRepository.GetBookById(id);
+            var book = _booksRepository.GetBookById(id).Result;
             this.Id = book.Id;
             this.Name = book.Name;
             this.PublishedYear = book.PublishedYear;
@@ -23,11 +26,13 @@
         public int PublishedYear { get; set; }
         public int? Id { get; set; }
 
-        public void Take(string user)
+        public Task Take(string user)
         {
             var book = _booksRepository.GetBookById(Id.Value);
             if (book != null)
-                _booksRepository.SaveBookRead(Id.Value, user);
+                return _booksRepository.SaveBookRead(Id.Value, user);
+            else
+                throw new KeyNotFoundException();
         }
     }
 }
