@@ -7,6 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2", "ConsoleApp2\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{163C1125-C91D-4250-A7FB-655F603EB0EF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D02314E-F509-4A8C-985C-A1E8845C6558}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Books.Tests", "Books.Tests\Books.Tests.csproj", "{F301DBC6-7599-4ADA-8847-F2F3EE7C796C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +28,10 @@ Global
 		{163C1125-C91D-4250-A7FB-655F603EB0EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{163C1125-C91D-4250-A7FB-655F603EB0EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{163C1125-C91D-4250-A7FB-655F603EB0EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F301DBC6-7599-4ADA-8847-F2F3EE7C796C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F301DBC6-7599-4ADA-8847-F2F3EE7C796C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F301DBC6-7599-4ADA-8847-F2F3EE7C796C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F301DBC6-7599-4ADA-8847-F2F3EE7C796C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
