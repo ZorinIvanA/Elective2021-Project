@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,9 +10,13 @@ namespace WebApplication1.Infrastructure
     public class BooksEFRepository : IBooksRepository
     {
         string _connectionString;
+        ILogger<BooksEFRepository> _logger;
 
-        public BooksEFRepository(IConfiguration configuration)
+        public BooksEFRepository(IConfiguration configuration, ILogger<BooksEFRepository> logger)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            var section = configuration.GetSection("CONNECTION_STRING");
+            if (section == null) _logger.LogInformation("connection string section is empty");
             _connectionString = configuration
                 .GetSection("CONNECTION_STRING")
                 .Value;
