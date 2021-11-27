@@ -15,6 +15,7 @@ namespace WebApplication1
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+                .AddEnvironmentVariables()
                 .Build();
 
             CreateHostBuilder(args).Build().Run();

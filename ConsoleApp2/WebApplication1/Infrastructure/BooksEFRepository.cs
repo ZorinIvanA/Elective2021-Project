@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Domain;
@@ -7,11 +8,20 @@ namespace WebApplication1.Infrastructure
 {
     public class BooksEFRepository : IBooksRepository
     {
+        string _connectionString;
+
+        public BooksEFRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration
+                .GetSection("CONNECTION_STRING")
+                .Value;
+        }
+
         public Task Delete(int bookId)
         {
             return Task.Run(() =>
             {
-                using (var context = new BooksContext())
+                using (var context = new BooksContext(_connectionString))
                 {
                     context.Books.Remove(context.Books.FirstOrDefault(x => x.Id == bookId));
                 }
@@ -23,7 +33,7 @@ namespace WebApplication1.Infrastructure
             return Task.Run(() =>
             {
                 Book book;
-                using (var context = new BooksContext())
+                using (var context = new BooksContext(_connectionString))
                 {
                     var bookDto = context.Books.FirstOrDefault(x => x.Id == bookId);
                     book = new Book
@@ -42,7 +52,7 @@ namespace WebApplication1.Infrastructure
             return Task.Run(() =>
             {
                 var books = new Book[] { };
-                using (var context = new BooksContext())
+                using (var context = new BooksContext(_connectionString))
                 {
                     books = (from bookDto in context.Books
                              select new Book
@@ -60,7 +70,7 @@ namespace WebApplication1.Infrastructure
         {
             return Task.Run(() =>
             {
-                using (var context = new BooksContext())
+                using (var context = new BooksContext(_connectionString))
                 {
                     context.Books.Add(new BookDTO
                     {
@@ -77,7 +87,7 @@ namespace WebApplication1.Infrastructure
         {
             return Task.Run(() =>
             {
-                using (var context = new BooksContext())
+                using (var context = new BooksContext(_connectionString))
                 {
                     context.BooksReads.Add(new BooksRead
                     {
@@ -94,7 +104,7 @@ namespace WebApplication1.Infrastructure
         {
             return Task.Run(() =>
             {
-                using (var context = new BooksContext())
+                using (var context = new BooksContext(_connectionString))
                 {
                     var bookToEdit = context.Books.FirstOrDefault(x => x.Id == book.Id);
                     bookToEdit.Id = book.Id.Value;

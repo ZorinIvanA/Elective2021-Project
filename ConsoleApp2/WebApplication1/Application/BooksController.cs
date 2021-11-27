@@ -33,8 +33,9 @@ namespace WebApplication1.Controllers
             {
                 return Ok(await _booksRepository.GetBooks() ?? new Book[0]);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex);
                 return new ObjectResult("Ошибка") { StatusCode = 500 };
             }
         }
