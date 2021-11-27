@@ -29,7 +29,14 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _booksRepository.GetBooks());
+            try
+            {
+                return Ok(await _booksRepository.GetBooks() ?? new Book[0]);
+            }
+            catch (Exception)
+            {
+                return new ObjectResult("Ошибка") { StatusCode = 500 };
+            }
         }
 
         [HttpGet("{bookId}")]
