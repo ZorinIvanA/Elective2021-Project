@@ -23,14 +23,7 @@ spec:
         image: docker pull ghcr.io/zorinivana/books-image:1.0.0
         env:
           - name: CONNECTION_STRING
-            value: "Data Source=20.123.206.86;Initial Catalog=Books;User ID=TestAdmin;Password=Pa$$w0rD12345:"
-        ports:
-        - protocol: TCP
-          port: 80
-          targetPort: 80
-        - protocol: TCP
-          port: 443
-          targetPort: 443          
+            value: "Data Source=20.123.206.86;Initial Catalog=Books;User ID=TestAdmin;Password=Pa$$w0rD12345:"        
         resources:
           requests:
             cpu: 100m
