@@ -20,3 +20,11 @@ jobs:
       run: echo ${{ secrets.DOCKER_TOKEN }} | docker login ghcr.io -u zorinivana --password-stdin     
     - name: Push image to registry
       run: docker push ghcr.io/zorinivana/books-image:1.0.0
+    # Get the GKE credentials so we can deploy to the cluster
+    - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+      with:
+        cluster_name: ${{ secrets.GKE_CLUSTER }}
+        location: ${{ secrets.GKE_ZONE }}
+        credentials: ${{ secrets.GKE_SA_KEY }}      
+    
+      
