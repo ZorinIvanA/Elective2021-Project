@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: books-api
-        image: docker pull ghcr.io/zorinivana/books-image:1.0.0
+        image: ghcr.io/zorinivana/books-image:1.0.0
         env:
           - name: CONNECTION_STRING
             value: "Data Source=20.123.206.86;Initial Catalog=Books;User ID=TestAdmin;Password=Pa$$w0rD12345:"        
