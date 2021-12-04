@@ -17,4 +17,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file ConsoleApp2/Dockerfile --tag books-image:$(date +%s)
     - name: Push image to registry
-      run: docker push books-image:$(date +%s)
+      run: docker push books-image:latest
