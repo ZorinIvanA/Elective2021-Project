@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       labels:
-        app: nginx
+        app: books-api
     spec:
       containers:
       - name: books-api
