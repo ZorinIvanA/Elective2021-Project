@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: books-api
+        app: api
 
     spec:
       containers:
