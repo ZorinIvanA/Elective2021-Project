@@ -5,6 +5,7 @@
     <UserSecretsId>84b0c464-22fa-4580-b525-c189390a903b</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
