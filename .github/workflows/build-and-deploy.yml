@@ -17,6 +17,6 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file ConsoleApp2/Dockerfile --tag ghcr.io/zorinivana/books-image:1.0.0
     - name: Login to registry
-      run: docker login -u zorinivana --password=${{secrets.DOCKER_TOKEN}}
+      run: docker login -u zorinivana --password ${{ secrets.DOCKER_TOKEN }}
     - name: Push image to registry
       run: docker push ghcr.io/zorinivana/books-image:1.0.0
