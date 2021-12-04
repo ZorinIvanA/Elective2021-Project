@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta1
-kind: Deployment
+kind: Deploy
 metadata:
   name: books-api
 
