@@ -13,6 +13,7 @@ COPY . .
 WORKDIR "/src/WebApplication1"
 RUN dotnet build "WebApplication1.csproj" -c Release -o /app/build
 
+
 FROM build AS publish
 RUN dotnet publish "WebApplication1.csproj" -c Release -o /app/publish
 
