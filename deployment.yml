@@ -25,8 +25,12 @@ spec:
           - name: CONNECTION_STRING
             value: "Data Source=20.123.206.86;Initial Catalog=Books;User ID=TestAdmin;Password=Pa$$w0rD12345:"
         ports:
-        - containerPort: 443
-        - containerPort: 80
+        - containerPort: 
+          - name: https
+            value: 443
+        - containerPort: 
+          - name: http
+            value: 80
         resources:
           requests:
             cpu: 100m
